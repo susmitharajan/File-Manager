@@ -2,11 +2,13 @@ package com.example.susmitharajan.filemanager;
 
 import android.Manifest;
 import android.app.Fragment;
+import android.app.FragmentManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
@@ -145,7 +147,10 @@ public class MainActivity extends AppCompatActivity
                 fragment = new Home();
                 break;
             case R.id.internal_storage:
+                Bundle bundle=new Bundle();
+                bundle.putString("Root", Environment.getExternalStorageDirectory().getAbsolutePath());
                 fragment = new Internal_Storage();
+                fragment.setArguments(bundle);
                 break;
             case R.id.external_storage:
                 fragment = new External_Storage();
@@ -153,9 +158,15 @@ public class MainActivity extends AppCompatActivity
         }
         if(fragment != null)
         {
-            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+           /* FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
             ft.replace(R.id.content_main, fragment);
-            ft.commit();
+            ft.addToBackStack(null);
+            ft.commit();*/
+            android.support.v4.app.FragmentManager manager = getSupportFragmentManager();
+            FragmentTransaction transaction = manager.beginTransaction();
+            transaction.replace(R.id.content_main,fragment, "FRAGMENT_TAG");
+            transaction.addToBackStack(null);
+            transaction.commit();
         }
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
